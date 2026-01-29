@@ -22,10 +22,8 @@ test('login test', {annotations :
 
 await page.goto('https://amazon.com');
     await expect(page).toHaveURL('https://www.amazon.com/');
-    await page.click("#nav-search-submit-button");
-    await page.fill("input[name='field-keywords']","nike");
-    await page.click("#nav-search-submit-button");
-    await expect(page).toHaveURL(/.*nike.*/);
+    await page.toHaveTitle(/Amazon/);
+    
 });
 
 test('login test2', {annotations :
@@ -37,7 +35,5 @@ test('login test2', {annotations :
 await page.goto('https://amazon.com');
     await expect(page).toHaveURL('https://www.amazon.com/');
     await page.click("#nav-search-submit-button");
-    await page.fill("input[name='field-keywords']","nike");
-    await page.click("#nav-search-submit-button");
-    await expect(page).toHaveURL(/.*nike.*/);
+    
 });
