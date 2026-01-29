@@ -1,0 +1,61 @@
+name: Playwright Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+      browserType:
+        description: 'Select browser type'
+        required: true
+        default: 'chromium'
+        type: choice
+        options:
+          - chromium
+          - firefox
+          - webkit
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      
+      - name: Display selected options
+        run: |
+          echo "Environment: ${{ github.event.inputs.environment }}"
+          echo "Browser: ${{ github.event.inputs.browserType }}"
+      
+      - name: Run Playwright tests
+        run: npx playwright test --project=${{ github.event.inputs.browserType }}
+        env:
+          ENVIRONMENT: ${{ github.event.inputs.environment }}
+      
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
